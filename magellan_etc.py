@@ -93,6 +93,12 @@ resonant = data[mask_resonant]
 #detached
 
 
+test = etc_imacs_f4 (magnitude = 24, phase=0, airmass=1.2, snr = 20, seeing = 0.6, filter="z")
+print (test)
+
+stop
+
+
 def total_time_per_class (data_class):
     mag_g, mag_r, mag_z = data_class["m_g"], data_class["m_r"], data_class["m_z"]
     mag_i = data_class["m_i"]
