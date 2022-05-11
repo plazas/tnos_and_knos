@@ -90,20 +90,34 @@ scattered = data[mask_scattered]
 classical = data[mask_classical]
 resonant = data[mask_resonant]
 
+target = np.array(['2007 TB418', '2010 RF188', '2013 RJ124', '2013 RV124', '2013 SA100',
+'2013 SR102', '2014 RV86', '2014 SQ403', '2014 ST373', '2014 US277',
+'2014 UZ224', '2014 YC92'])
+
+mask_magellan = np.repeat(False, len(data))
+
+for i, name in enumerate(data['MPC']):
+    for t in target:
+        if name == t:
+            mask_magellan[i] = True
+
+
+magellan = data[mask_magellan]
+
 #detached
 
 
-test = etc_imacs_f4 (magnitude = 24, phase=0, airmass=1.2, snr = 20, seeing = 0.6, filter="z")
-print (test)
+#test = etc_imacs_f4 (magnitude = 24, phase=0, airmass=1.2, snr = 20, seeing = 0.6, filter="z")
+#print (test)
 
-stop
+#stop
 
 
 def total_time_per_class (data_class):
     mag_g, mag_r, mag_z = data_class["m_g"], data_class["m_r"], data_class["m_z"]
     mag_i = data_class["m_i"]
-    phase_vec = [0,7,14]
-    snr_vec = [20, 50]
+    phase_vec = [0,7,9,10, 11, 12,14]
+    snr_vec = [20]
     seeing_vec  = [0.6, 0.8]
     airmass_vec = [1.0, 1.4, 2.0]
     for airmass in airmass_vec:
@@ -117,19 +131,24 @@ def total_time_per_class (data_class):
                     for r in mag_r:
                         time, _, _, _, _, _ = etc_imacs_f4 (magnitude = r, phase=phase, airmass=airmass, snr = snr, seeing = seeing, filter="r")
                         total_time+=time
-                    for i in mag_i:
-                        time, _, _, _, _, _ = etc_imacs_f4 (magnitude = i, phase=phase, airmass=airmass, snr = snr, seeing = seeing, filter="i")
-                        total_time+=time
+                    #for i in mag_i:
+                    #    time, _, _, _, _, _ = etc_imacs_f4 (magnitude = i, phase=phase, airmass=airmass, snr = snr, seeing = seeing, filter="i")
+                    #    total_time+=time
                     for z in mag_z:
                         time, _, _, _, _, _ = etc_imacs_f4 (magnitude = z, phase=phase, airmass=airmass, snr = snr, seeing = seeing, filter="z")
                         total_time+=time
                     total_time/=3600
-                    print (f"Phase: {phase}, Airmass: {airmass}, SNR: {snr},  Seeing: {seeing}, Total time (g+r+i+z): {total_time:.2f} hours")
+                    print (f"Phase: {phase}, Airmass: {airmass}, SNR: {snr},  Seeing: {seeing}, Total time (g+r+z): {total_time:.2f} hours")
 
 
-print ("Detached", len(detached))
-total_time_per_class (detached)
-print (" ")
-print ("Scattered", len(scattered))
-total_time_per_class (scattered)
+#print ("Detached", len(detached))
+#total_time_per_class (detached)
+#print (" ")
+#print ("Scattered", len(scattered))
+#total_time_per_class (scattered)
+
+print ("Magellan", len(magellan))
+total_time_per_class (magellan)
+
+
 
