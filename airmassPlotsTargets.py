@@ -12,7 +12,10 @@ from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.pyplot as plt
 
 # Las Campanas Observatory
-lco = Observer.at_site("LCO", timezone="America/Santiago") 
+#lco = Observer.at_site("LCO", timezone="America/Santiago") 
+apo = Observer.at_site("APO", timezone="US/Mountain") 
+
+observatory = apo
 
 
 ra_max = np.array([28.77793, 15.54044, 28.31347, 9.53626, 19.42361, 329.83334,
@@ -37,7 +40,7 @@ dec_mid = 0.5*(dec_max + dec_min)
 
 
 
-pp = PdfPages ("./airmassTargets-test.pdf")
+pp = PdfPages ("./airmassTargets-APO.pdf")
 
 times = []
 for i in range(1,13):
@@ -55,14 +58,18 @@ print ("names: ", target_names)
 for i, time in enumerate(times):
     fig = plt.figure()
     #ax = fig.add_subplot(111)
+    if i in [3,4,5,6]:
+        loc = 'upper right'
+    else:
+        loc = 'upper left'
     for j, (ra_midpoint, dec_midpoint) in enumerate(zip (ra_mid, dec_mid)):
         ax = fig.add_subplot(111)
         coord = SkyCoord(ra=ra_midpoint*u.deg, dec=dec_midpoint*u.deg, frame='icrs') 
         target = FixedTarget(name=target_names[j], coord=coord)
         time = Time(time)
         print (i, j, target_names[j])
-        plot_airmass(target, lco, time, use_local_tz=True, brightness_shading=True, altitude_yaxis=True)
-        ax.legend(shadow=True, loc=2)
+        plot_airmass(target, observatory, time, use_local_tz=True, brightness_shading=True, altitude_yaxis=True)
+        ax.legend(shadow=True, loc=loc)
     plt.tight_layout()
     fig.suptitle(months[i])
     pp.savefig()
